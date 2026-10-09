@@ -110,13 +110,8 @@ public class Main {
     @ToString
     public static class Options {
 
-        enum TargetManifest {
-            EXPERIMENTAL,
-            DAILY;
-        }
-
         @CommandLine.Option(names = {"-M", "--target-manifest"}, required = true, description = "Which manifest to use as source of mod versions.; Valid values: ${COMPLETION-CANDIDATES}")
-        protected TargetManifest targetManifest;
+        protected String targetManifest;
 
         @CommandLine.Option(names = {"--get-latest"}, description = {
                 "[USE AT YOUR OWN RISK]",

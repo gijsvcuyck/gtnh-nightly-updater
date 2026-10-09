@@ -503,8 +503,7 @@ public class Updater {
 
             if (mod.getVersions() != null && !mod.getVersions().isEmpty()) {
                 mod.getVersions().sort(Comparator.comparing(v -> new DefaultArtifactVersion(((Assets.Version) v).getVersion())).reversed());
-
-                mod.setLatestVersion(options.targetManifest == Main.Options.TargetManifest.DAILY ?
+                mod.setLatestVersion(options.targetManifest.equalsIgnoreCase("daily") ?
                         mod.getVersions().stream().filter(v -> !v.getVersion().endsWith("-pre")).findFirst().get().getVersion() :
                         mod.getVersions().getFirst().getVersion()
                 );
@@ -541,12 +540,12 @@ public class Updater {
         });
 
         request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://raw.githubusercontent.com/GTNewHorizons/DreamAssemblerXXL/refs/heads/master/releases/manifests/%s.json", options.targetManifest.name().toLowerCase())))
+                .uri(URI.create(String.format("https://raw.githubusercontent.com/GTNewHorizons/DreamAssemblerXXL/refs/heads/master/releases/manifests/%s.json", options.targetManifest)))
                 .GET()
                 .build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new IOException("Failed to fetch manifest file: HTTP " + response.statusCode());
+            throw new IOException("Failed to fetch manifest file: HTTP " + response.statusCode() + "for request: " + request.uri());
         }
         val map = (LinkedTreeMap<String, Object>) JsonParser.parse(response.body(), Map.class);
 
